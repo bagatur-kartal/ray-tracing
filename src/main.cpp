@@ -1,20 +1,22 @@
+#include "colour.hpp"
+
 #include <iostream>
 
 int main() {
     int image_width = 256;
     int image_height = 256;
     // PPM output
-    std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
+    std::cout << "P3\n" << image_width << ' ' << image_height <<
+        "\n255\n";
     for (int j = 0; j < image_height; ++j) {
-        std::clog << "\rScalines remaining: " << (image_height - j) << ' ' << std::flush;
+        std::clog << "\rScalines remaining: " << (image_height - j)
+            << ' ' << std::flush;
         for (int i = 0; i < image_width; ++i) {
             double r = double(i) / (image_width-1);
             double g = double(j) / (image_height-1);
             double b = .0;
-            int ir = int(255*r);
-            int ig = int(255*g);
-            int ib = int(255*b);
-            std::cout << ir << ' ' << ig << ' ' << ib << '\n';
+            colour pixel_colour{r, g, b};
+            write_colour(std::cout, pixel_colour);
         }
     }
     std::clog << "\rDone.                     \n";
