@@ -83,6 +83,11 @@ inline vec3 operator*(const vec3& lhs, const double rhs) {
     ret *=  rhs;
     return ret;
 }
+inline vec3 operator*(const double lhs, const vec3 &rhs) {
+    vec3 ret = rhs;
+    ret *=  lhs;
+    return ret;
+}
 inline vec3 operator/(const vec3& lhs, const double rhs) {
     vec3 ret = lhs;
     ret /=  rhs;
