@@ -16,6 +16,10 @@ public:
         return dir;
     }
 
+    point3 at(double t) const {
+        return orig + dir * t;
+    }
+
 private:
     point3 orig;
     vec3 dir;
