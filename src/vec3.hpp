@@ -120,5 +120,15 @@ inline vec3 unit_vector(const vec3& v) {
     return v / v.length();
 }
 
+inline vec3 random_unit_vector() {
+    for (;;) {
+        vec3 p = vec3::random(-1,1);
+        double lensq = p.length_squared();
+        if (1e-100 < lensq && lensq <= 1) {
+            return p / sqrt(lensq);
+        }
+    }
+}
+
 #endif
 
