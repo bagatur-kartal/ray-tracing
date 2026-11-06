@@ -2,6 +2,7 @@
 #define COLOUR_HPP
 
 #include "vec3.hpp"
+#include "interval.hpp"
 
 #include <iostream>
 
@@ -14,9 +15,10 @@ inline void write_colour(
     double r = pixel_colour.x();
     double g = pixel_colour.y();
     double b = pixel_colour.z();
-    int ir = int(255.999 * r);
-    int ig = int(255.999 * g);
-    int ib = int(255.999 * b);
+    static const interval intensity{0.0, 0.999};
+    int ir = int(256 * intensity.clamp(r));
+    int ig = int(256 * intensity.clamp(g));
+    int ib = int(256 * intensity.clamp(b));
     out << ir << ' ' << ig << ' ' << ib << '\n';
 }
 
