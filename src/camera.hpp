@@ -13,6 +13,7 @@ public:
     int image_width = 100;
     int samples_per_pixel = 10;
     int max_depth = 10;
+    double vfov = 90;
 
     void render(const hittable &world) {
         initialize();
@@ -40,7 +41,9 @@ private:
             image_height = 1;
         }
         double focal_length = 1.0;
-        double viewport_height = 2.0;
+        double theta = degrees_to_radians(vfov);
+        double h = std::tan(theta/2);
+        double viewport_height = 2 * h * focal_length;
         double viewport_width = viewport_height *
             (double(image_width)/image_height);
         pixel_samples_scale = 1.0 / samples_per_pixel;
