@@ -2,5 +2,5 @@
 
 Couple ray tracing / path tracing techniques for fun.
 
-image::img/example1.ppm[Bunch of spheres]
+image::img/example1.png[Bunch of spheres]
 
