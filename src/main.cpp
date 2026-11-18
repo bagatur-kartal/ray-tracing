@@ -5,7 +5,7 @@
 #include "material.hpp"
 #include "bvh.hpp"
 
-int bouncing_spheres() {
+void bouncing_spheres() {
     hittable_list world;
     std::shared_ptr<texture> checker =
         std::make_shared<checker_texture>(0.32, colour(.2,.3,.1), colour(.9,.9,.9));
@@ -56,10 +56,47 @@ int bouncing_spheres() {
     cam.defocus_angle = 0.6;
     cam.focus_dist = 10;
     cam.render(world);
-    return 0;
+}
+
+void checkered_spheres() {
+    hittable_list world;
+    std::shared_ptr<texture> checker =
+        std::make_shared<checker_texture>(
+                0.32, colour{.2, .3, .1}, colour{.9, .9, .9}
+                );
+    world.add(
+            std::make_shared<sphere>(
+                point3{0,-10, 0}, 10, std::make_shared<lambertian>(checker)
+                )
+            );
+    world.add(
+            std::make_shared<sphere>(
+                point3{0, 10, 0}, 10, std::make_shared<lambertian>(checker)
+                )
+            );
+    camera cam;
+    cam.aspect_ratio      = 16.0 / 9.0;
+    cam.image_width       = 400;
+    cam.samples_per_pixel = 100;
+    cam.max_depth         = 50;
+    cam.vfov     = 20;
+    cam.lookfrom = point3(13,2,3);
+    cam.lookat   = point3(0,0,0);
+    cam.vup      = vec3(0,1,0);
+    cam.defocus_angle = 0;
+    cam.render(world);
 }
 
 int main() {
-    return bouncing_spheres();
+    int scene = 1;
+    switch (scene) {
+    case 0:
+        bouncing_spheres();
+        break;
+    case 1:
+        checkered_spheres();
+        break;
+    }
+    return 0;
 }
 
