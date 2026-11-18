@@ -37,6 +37,18 @@ public:
         return trilinear_interp(c, u, v, w);
     }
 
+    double turb(const point3 &p, int depth) const {
+        double acc = 0.0;
+        vec3 temp_p = p;
+        double weight = 1.0;
+        for (int i = 0; i < depth; ++i) {
+            acc += weight * noise(temp_p);
+            weight *= 0.5;
+            temp_p *= 2;
+        }
+        return std::fabs(acc);
+    }
+
 private:
     static const int point_count = 256;
     vec3 randvec[point_count];
