@@ -223,6 +223,60 @@ void simple_light() {
     cam.render(world);
 }
 
+void cornell_box() {
+    hittable_list world;
+    std::shared_ptr<material> red =
+        std::make_shared<lambertian>(colour(.65, .05, .05));
+    std::shared_ptr<material> white =
+        std::make_shared<lambertian>(colour(.73, .73, .73));
+    std::shared_ptr<material> green =
+        std::make_shared<lambertian>(colour(.12, .45, .15));
+    std::shared_ptr<material> light =
+        std::make_shared<diffuse_light>(colour(15, 15, 15));
+    world.add(
+            std::make_shared<quad>(
+                point3{555,0,0}, vec3{0,555,0}, vec3{0,0,555}, green
+                )
+            );
+    world.add(
+            std::make_shared<quad>(
+                point3{0,0,0}, vec3{0,555,0}, vec3{0,0,555}, red
+                )
+            );
+    world.add(
+            std::make_shared<quad>(
+                point3{343, 554, 332}, vec3{-130,0,0}, vec3{0,0,-105}, light
+                )
+            );
+    world.add(
+            std::make_shared<quad>(
+                point3{0,0,0}, vec3{555,0,0}, vec3{0,0,555}, white
+                )
+            );
+    world.add(
+            std::make_shared<quad>(
+                point3{555,555,555}, vec3{-555,0,0}, vec3{0,0,-555}, white
+                )
+            );
+    world.add(
+            std::make_shared<quad>(
+                point3{0,0,555}, vec3{555,0,0}, vec3{0,555,0}, white
+                )
+            );
+    camera cam;
+    cam.aspect_ratio = 1.0;
+    cam.image_width = 600;
+    cam.samples_per_pixel = 200;
+    cam.max_depth = 50;
+    cam.background = colour{0,0,0};
+    cam.vfov = 40;
+    cam.lookfrom = point3{278, 278, -800};
+    cam.lookat= point3{278, 278, 0};
+    cam.vup = vec3{0,1,0};
+    cam.defocus_angle = 0;
+    cam.render(world);
+}
+
 int main(int argc, char *argv[]) {
     if (argc <= 1) {
         std::cerr << "Usage: ";
@@ -253,6 +307,9 @@ int main(int argc, char *argv[]) {
         break;
     case 5:
         simple_light();
+        break;
+    case 6:
+        cornell_box();
         break;
     default:
         std::cerr << "Wrong scene index\n";
