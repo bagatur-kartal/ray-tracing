@@ -5,10 +5,11 @@
 #include "material.hpp"
 #include "bvh.hpp"
 
-int main() {
+int bouncing_spheres() {
     hittable_list world;
-    std::shared_ptr<material> ground_material =
-        std::make_shared<lambertian>(colour{0.5,0.5,0.5});
+    std::shared_ptr<texture> checker =
+        std::make_shared<checker_texture>(0.32, colour(.2,.3,.1), colour(.9,.9,.9));
+    std::shared_ptr<material> ground_material = std::make_shared<lambertian>(checker);
     world.add(std::make_shared<sphere>(point3{0,-1000,0}, 1000, ground_material));
     for (int i = -11; i < 11; ++i) {
         for (int j = -11; j < 11; ++j) {
@@ -56,5 +57,9 @@ int main() {
     cam.focus_dist = 10;
     cam.render(world);
     return 0;
+}
+
+int main() {
+    return bouncing_spheres();
 }
 

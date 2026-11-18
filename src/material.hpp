@@ -3,6 +3,7 @@
 
 #include "hittable.hpp"
 #include "colour.hpp"
+#include "texture.hpp"
 
 class material {
 public:
@@ -16,7 +17,8 @@ public:
 
 class lambertian : public material {
 public:
-    lambertian(const colour &albedo) : albedo{albedo} {}
+    lambertian(const colour &albedo) : tex{std::make_shared<solid_colour>(albedo)} {}
+    lambertian(std::shared_ptr<texture> tex) : tex{tex} {}
 
     virtual bool scatter(const ray &r_in, const hit_record &rec,
             colour &attenuation, ray &scattered) const override {
@@ -25,12 +27,12 @@ public:
             scatter_direction = rec.normal;
         }
         scattered = ray{rec.p, scatter_direction, r_in.time()};
-        attenuation = albedo;
+        attenuation = tex->value(rec.u, rec.v, rec.p);
         return true;
     }
 
 private:
-    colour albedo;
+    std::shared_ptr<texture> tex;
 };
 
 class metal : public material {
