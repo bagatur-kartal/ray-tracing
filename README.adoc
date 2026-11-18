@@ -1,4 +1,6 @@
 = Ray Tracing
 
-Ref: https://raytracing.github.io/[]
+Couple ray tracing / path tracing techniques for fun.
+
+image::img/example1.ppm[Bunch of spheres]
 
