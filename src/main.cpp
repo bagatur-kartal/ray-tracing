@@ -87,6 +87,26 @@ void checkered_spheres() {
     cam.render(world);
 }
 
+void earth() {
+    std::shared_ptr<texture> earth_texture =
+        std::make_shared<image_texture>("res/earthmap.jpg");
+    std::shared_ptr<material> earth_surface =
+        std::make_shared<lambertian>(earth_texture);
+    std::shared_ptr<hittable> globe =
+        std::make_shared<sphere>(point3{0,0,0}, 2, earth_surface);
+    camera cam;
+    cam.aspect_ratio = 16.0 / 9.0;
+    cam.image_width = 400;
+    cam.samples_per_pixel = 100;
+    cam.max_depth = 50;
+    cam.vfov = 20;
+    cam.lookfrom = point3{0,0,12};
+    cam.lookat = point3{0,0,0};
+    cam.vup = vec3{0,1,0};
+    cam.defocus_angle = 0;
+    cam.render(hittable_list(globe));
+}
+
 int main(int argc, char *argv[]) {
     if (argc <= 1) {
         std::cerr << "Usage: ";
@@ -105,6 +125,9 @@ int main(int argc, char *argv[]) {
         break;
     case 1:
         checkered_spheres();
+        break;
+    case 2:
+        earth();
         break;
     default:
         std::cerr << "Wrong scene index\n";

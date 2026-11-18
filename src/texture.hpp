@@ -2,6 +2,7 @@
 #define TEXTURE_HPP
 
 #include "colour.hpp"
+#include "rtw_stb_image.hpp"
 
 #include <memory>
 #include <cmath>
@@ -51,6 +52,31 @@ private:
     double inv_scale;
     std::shared_ptr<texture> even;
     std::shared_ptr<texture> odd;
+};
+
+class image_texture : public texture {
+public:
+    image_texture(const char *filename) : image{filename} {}
+
+    virtual colour value(double u, double v, const point3 &p) const override {
+        if (image.height() <= 0) {
+            return colour{0,1,1};
+        }
+        u = interval{0,1}.clamp(u);
+        v = 1.0 - interval{0,1}.clamp(v);
+        int i = u * image.width();
+        int j = v * image.height();
+        const unsigned char *pixel = image.pixel_data(i,j);
+        double colour_scale = 1.0 / 255.0;
+        return colour{
+            colour_scale*pixel[0],
+            colour_scale*pixel[1],
+            colour_scale*pixel[2]
+        };
+    }
+
+private:
+    rtw_image image;
 };
 
 #endif
