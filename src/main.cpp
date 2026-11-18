@@ -109,7 +109,7 @@ void earth() {
 
 void perlin_spheres() {
     hittable_list world;
-    std::shared_ptr<texture> pertext = std::make_shared<noise_texture>();
+    std::shared_ptr<texture> pertext = std::make_shared<noise_texture>(4);
     world.add(
             std::make_shared<sphere>(
                 point3{0,-1000,0}, 1000, std::make_shared<lambertian>(pertext)
