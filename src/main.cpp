@@ -87,14 +87,27 @@ void checkered_spheres() {
     cam.render(world);
 }
 
-int main() {
-    int scene = 1;
+int main(int argc, char *argv[]) {
+    if (argc <= 1) {
+        std::cerr << "Usage: ";
+        if (argc < 1) {
+            std::cerr << "ray-tracing";
+        } else {
+            std::cerr << argv[0];
+        }
+        std::cerr << " scene_index\n";
+        return 1;
+    }
+    int scene = atoi(argv[1]);
     switch (scene) {
     case 0:
         bouncing_spheres();
         break;
     case 1:
         checkered_spheres();
+        break;
+    default:
+        std::cerr << "Wrong scene index\n";
         break;
     }
     return 0;
