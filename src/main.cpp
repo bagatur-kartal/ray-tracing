@@ -50,6 +50,7 @@ void bouncing_spheres() {
     cam.image_width = 400;
     cam.samples_per_pixel = 100;
     cam.max_depth = 5;
+    cam.background = colour(0.7,0.8,1.0);
     cam.vfov = 20;
     cam.lookfrom = point3{13,2,3};
     cam.lookat = point3{0,0,0};
@@ -80,6 +81,7 @@ void checkered_spheres() {
     cam.image_width       = 400;
     cam.samples_per_pixel = 100;
     cam.max_depth         = 50;
+    cam.background = colour(0.7,0.8,1.0);
     cam.vfov     = 20;
     cam.lookfrom = point3(13,2,3);
     cam.lookat   = point3(0,0,0);
@@ -100,6 +102,7 @@ void earth() {
     cam.image_width = 400;
     cam.samples_per_pixel = 100;
     cam.max_depth = 50;
+    cam.background = colour(0.7,0.8,1.0);
     cam.vfov = 20;
     cam.lookfrom = point3{0,0,12};
     cam.lookat = point3{0,0,0};
@@ -126,6 +129,7 @@ void perlin_spheres() {
     cam.image_width = 400;
     cam.samples_per_pixel = 100;
     cam.max_depth = 50;
+    cam.background = colour(0.7,0.8,1.0);
     cam.vfov = 20;
     cam.lookfrom = point3(13,2,3);
     cam.lookat = point3(0,0,0);
@@ -171,10 +175,50 @@ void quads() {
     cam.image_width = 400;
     cam.samples_per_pixel = 100;
     cam.max_depth = 50;
+    cam.background = colour(0.7,0.8,1.0);
     cam.vfov = 80;
     cam.lookfrom = point3(0,0,9);
     cam.lookat = point3(0,0,0);
     cam.vup = vec3(0,1,0);
+    cam.defocus_angle = 0;
+    cam.render(world);
+}
+
+void simple_light() {
+    hittable_list world;
+    std::shared_ptr<texture> pertext = std::make_shared<noise_texture>(4);
+    world.add(
+            std::make_shared<sphere>(
+                point3{0,-1000,0}, 1000, std::make_shared<lambertian>(pertext)
+                )
+            );
+    world.add(
+            std::make_shared<sphere>(
+                point3{0,2,0}, 2, std::make_shared<lambertian>(pertext)
+                )
+            );
+    std::shared_ptr<material> difflight =
+        std::make_shared<diffuse_light>(colour{4,4,4});
+    world.add(
+            std::make_shared<quad>(
+                point3{3,1,-2}, vec3{2,0,0}, vec3{0,2,0}, difflight
+                )
+            );
+    world.add(
+            std::make_shared<sphere>(
+                point3{0,7,0}, 2, difflight
+                )
+            );
+    camera cam;
+    cam.aspect_ratio = 16.0 / 9.0;
+    cam.image_width = 400;
+    cam.samples_per_pixel = 100;
+    cam.max_depth = 50;
+    cam.background = colour{0,0,0};
+    cam.vfov = 20;
+    cam.lookfrom = point3{26,3,6};
+    cam.lookat = point3{0,2,0};
+    cam.vup = vec3{0,1,0};
     cam.defocus_angle = 0;
     cam.render(world);
 }
@@ -206,6 +250,9 @@ int main(int argc, char *argv[]) {
         break;
     case 4:
         quads();
+        break;
+    case 5:
+        simple_light();
         break;
     default:
         std::cerr << "Wrong scene index\n";
