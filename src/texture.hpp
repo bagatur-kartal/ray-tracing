@@ -3,6 +3,7 @@
 
 #include "colour.hpp"
 #include "rtw_stb_image.hpp"
+#include "perlin.hpp"
 
 #include <memory>
 #include <cmath>
@@ -77,6 +78,18 @@ public:
 
 private:
     rtw_image image;
+};
+
+class noise_texture : public texture {
+public:
+    noise_texture() {}
+
+    virtual colour value(double u, double v, const point3 &p) const override {
+        return colour{1,1,1} * noise.noise(p);
+    }
+
+private:
+    perlin noise;
 };
 
 #endif
