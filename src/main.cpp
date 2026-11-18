@@ -4,6 +4,7 @@
 #include "camera.hpp"
 #include "material.hpp"
 #include "bvh.hpp"
+#include "quad.hpp"
 
 void bouncing_spheres() {
     hittable_list world;
@@ -133,6 +134,51 @@ void perlin_spheres() {
     cam.render(world);
 }
 
+void quads() {
+    hittable_list world;
+    std::shared_ptr<material> left_red =
+        std::make_shared<lambertian>(colour{1.0, 0.2, 0.2});
+    std::shared_ptr<material> back_green =
+        std::make_shared<lambertian>(colour{0.2, 1.0, 0.2});
+    std::shared_ptr<material> right_blue =
+        std::make_shared<lambertian>(colour{0.2, 0.2, 1.0});
+    std::shared_ptr<material> upper_orange =
+        std::make_shared<lambertian>(colour{1.0, 0.5, 0.0});
+    std::shared_ptr<material> lower_teal =
+        std::make_shared<lambertian>(colour{0.2, 0.8, 0.8});
+    world.add(std::make_shared<quad>(
+                point3{-3,-2, 5}, vec3{0, 0,-4}, vec3{0, 4, 0}, left_red
+                )
+            );
+    world.add(std::make_shared<quad>(
+                point3{-2,-2, 0}, vec3{4, 0, 0}, vec3{0, 4, 0}, back_green
+                )
+            );
+    world.add(std::make_shared<quad>(
+                point3{ 3,-2, 1}, vec3{0, 0, 4}, vec3{0, 4, 0}, right_blue
+                )
+            );
+    world.add(std::make_shared<quad>(
+                point3{-2, 3, 1}, vec3{4, 0, 0}, vec3{0, 0, 4}, upper_orange
+                )
+            );
+    world.add(std::make_shared<quad>(
+                point3{-2,-3, 5}, vec3{4, 0, 0}, vec3{0, 0,-4}, lower_teal
+                )
+            );
+    camera cam;
+    cam.aspect_ratio = 1.0;
+    cam.image_width = 400;
+    cam.samples_per_pixel = 100;
+    cam.max_depth = 50;
+    cam.vfov = 80;
+    cam.lookfrom = point3(0,0,9);
+    cam.lookat = point3(0,0,0);
+    cam.vup = vec3(0,1,0);
+    cam.defocus_angle = 0;
+    cam.render(world);
+}
+
 int main(int argc, char *argv[]) {
     if (argc <= 1) {
         std::cerr << "Usage: ";
@@ -157,6 +203,9 @@ int main(int argc, char *argv[]) {
         break;
     case 3:
         perlin_spheres();
+        break;
+    case 4:
+        quads();
         break;
     default:
         std::cerr << "Wrong scene index\n";
