@@ -2,6 +2,7 @@
 #define HITTABLE_LIST_HPP
 
 #include "hittable.hpp"
+#include "aabb.hpp"
 
 #include <memory>
 #include <vector>
@@ -20,10 +21,11 @@ public:
     }
     void add(std::shared_ptr<hittable> object) {
         objects.push_back(object);
+        bbox = aabb{bbox, object->bounding_box()};
     }
 
     virtual bool hit(const ray &r, interval ray_t, hit_record &rec)
-        const {
+        const override {
         hit_record temp_rec;
         bool hit_anything = false;
         double closest_so_far = ray_t.max;
@@ -37,6 +39,13 @@ public:
         }
         return hit_anything;
     }
+
+    virtual aabb bounding_box() const override {
+        return bbox;
+    }
+
+private:
+    aabb bbox;
 };
 
 #endif

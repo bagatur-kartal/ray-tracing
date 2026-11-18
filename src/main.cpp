@@ -3,6 +3,7 @@
 #include "sphere.hpp"
 #include "camera.hpp"
 #include "material.hpp"
+#include "bvh.hpp"
 
 int main() {
     hittable_list world;
@@ -41,6 +42,7 @@ int main() {
     world.add(std::make_shared<sphere>(point3{0,1,0}, 1, material1));
     world.add(std::make_shared<sphere>(point3{-4,1,0}, 1, material2));
     world.add(std::make_shared<sphere>(point3{4,1,0}, 1, material3));
+    world = hittable_list{std::make_shared<bvh_node>(world)};
     camera cam;
     cam.aspect_ratio = 16.0 / 9.0;
     cam.image_width = 400;
