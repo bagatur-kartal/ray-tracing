@@ -3,4 +3,5 @@
 Couple ray tracing / path tracing techniques for fun.
 
 image::img/example1.png[Bunch of spheres]
+image::img/example2.png[Dark room with square light and bunch of objects]
 
