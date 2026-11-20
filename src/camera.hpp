@@ -30,9 +30,11 @@ public:
                 << ' ' << std::flush;
             for (int i = 0; i < image_width; ++i) {
                 colour pixel_colour{0,0,0};
-                for (int sample = 0; sample < samples_per_pixel; ++sample) {
-                    ray r = get_ray(i, j);
-                    pixel_colour += ray_colour(r, max_depth, world);
+                for (int s_j = 0; s_j < sqrt_spp; ++s_j) {
+                    for (int s_i = 0; s_i < sqrt_spp; ++s_i) {
+                        ray r = get_ray(i, j, s_i, s_j);
+                        pixel_colour += ray_colour(r, max_depth, world);
+                    }
                 }
                 write_colour(std::cout, pixel_samples_scale * pixel_colour);
             }
@@ -46,6 +48,9 @@ private:
         if (image_height < 1) {
             image_height = 1;
         }
+        sqrt_spp = std::sqrt(samples_per_pixel);
+        pixel_samples_scale = 1.0 / (sqrt_spp * sqrt_spp);
+        recip_sqrt_spp = 1.0/sqrt_spp;
         center = lookfrom;
         double theta = degrees_to_radians(vfov);
         double h = std::tan(theta/2);
@@ -55,7 +60,6 @@ private:
         w = unit_vector(lookfrom - lookat);
         u = unit_vector(cross(vup, w));
         v = cross(w, u);
-        pixel_samples_scale = 1.0 / samples_per_pixel;
         vec3 viewport_u = viewport_width * u;
         vec3 viewport_v = viewport_height * -v;
         pixel_delta_u = viewport_u / image_width;
@@ -90,8 +94,8 @@ private:
         return colour_from_emission + colour_from_scatter;
     }
 
-    ray get_ray(int i, int j) const {
-        vec3 offset = sample_square();
+    ray get_ray(int i, int j, int s_i, int s_j) const {
+        vec3 offset = sample_square_stratified(s_i, s_j);
         point3 pixel_sample = pixel00_loc
             + ((i + offset.x()) * pixel_delta_u)
             + ((j + offset.y()) * pixel_delta_v);
@@ -105,6 +109,12 @@ private:
         return vec3{random_double() - 0.5, random_double() - 0.5, 0};
     }
 
+    vec3 sample_square_stratified(int s_i, int s_j) const {
+        double px = ((s_i + random_double()) * recip_sqrt_spp) - 0.5;
+        double py = ((s_j + random_double()) * recip_sqrt_spp) - 0.5;
+        return vec3{px, py, 0};
+    }
+
     point3 defocus_disk_sample() const {
         vec3 p = random_in_unit_disk();
         return center + (p[0] * defocus_disk_u) + (p[1] * defocus_disk_v);
@@ -112,6 +122,8 @@ private:
 
     int image_height;
     double pixel_samples_scale;
+    int sqrt_spp;
+    double recip_sqrt_spp;
     point3 center;
     point3 pixel00_loc;
     vec3 pixel_delta_u;
